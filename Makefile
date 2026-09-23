@@ -6,7 +6,7 @@
 
 SRC_DIR := src
 BIN_DIR := bin
-TARGET  := $(BIN_DIR)/client
+TARGET  := $(BIN_DIR)/client_static
 
 .PHONY: all clean run
 
