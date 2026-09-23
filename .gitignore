@@ -1,6 +1,7 @@
 obj/*
 bin/*
 lib/*.a
+lib/*.so
 !obj/.gitkeep
 !bin/.gitkeep
 !lib/.gitkeep
