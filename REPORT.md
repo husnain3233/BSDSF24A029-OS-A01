@@ -57,3 +57,37 @@ library (libmyutils.a) into the final executable at link time. Unlike dynamic li
 program merely references a shared library that must be present at runtime, a statically linked
 executable is fully self-contained: all the library code it depends on becomes part of the binary,
 so it can run without libmyutils.a existing anywhere on the system.
+
+## Feature-4: Creating and using a Dynamic Library
+
+### Q1: What is -fPIC and why is it required for shared libraries?
+-fPIC (Position-Independent Code) tells the compiler to generate machine code that does not
+depend on being loaded at a fixed memory address. This matters because a shared library (.so)
+can be loaded into different memory addresses in different processes, or even at different
+addresses within the same process depending on what else is loaded. Without -fPIC, the code
+would use absolute memory addresses baked in at compile time, which only works if the code is
+guaranteed to live at one specific address — true for a normal executable, but not for a
+library that many different programs load independently. PIC code instead uses relative
+addressing so it works correctly no matter where in memory it ends up.
+
+### Q2: Explain the file size difference between client_static and client_dynamic.
+client_static is larger because static linking physically copies the compiled machine code of
+every function from libmyutils.a directly into the executable at link time, making the binary
+fully self-contained. client_dynamic is smaller because it only contains a reference to the
+functions it needs — the actual code stays in the external libmyutils.so file, loaded into
+memory separately at runtime by the dynamic loader. In this project the size gap is modest
+since the utility library itself is small (a handful of string/file functions); the difference
+becomes much more dramatic with larger libraries, since the dynamic executable's size stays
+roughly constant while the static one grows with every function pulled in from the library.
+
+### Q3: What is LD_LIBRARY_PATH, and what does needing it reveal about the dynamic loader?
+LD_LIBRARY_PATH is an environment variable that tells the operating system's dynamic loader
+additional directories to search when looking for shared libraries a program depends on. It
+was necessary here because libmyutils.so lives in a custom project folder (lib/) rather than
+a standard system library location like /usr/lib, so the loader had no way to find it by
+default, producing the "cannot open shared object file" error. This demonstrates that with
+dynamic linking, resolving library dependencies is deferred from link time to run time: the
+executable only stores the library's name, and it becomes the operating system's responsibility,
+via the dynamic loader, to locate and load the actual library code into memory before the
+program can execute. This is fundamentally different from static linking, where all dependencies
+are resolved and embedded once at build time.
