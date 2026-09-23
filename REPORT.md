@@ -26,3 +26,34 @@ entry on the repository, including release notes describing what changed. Attach
 (like the compiled bin/client executable) lets users download and run the program directly,
 without needing to clone the repository and build it themselves from source. This is especially
 useful for end users who just want to use the software rather than develop it.
+
+## Feature-3: Creating and using a Static Library
+
+### Q1: Compare the Feature-2 and Feature-3 Makefiles. Key differences?
+The Feature-2 Makefile compiled all .c files into .o files and linked every object file directly
+into the final executable in one step. The Feature-3 Makefile splits the sources into two groups:
+LIB_SOURCES (mystrfunctions.c, myfilefunctions.c) and MAIN_SOURCE (main.c). It adds new
+variables (AR, ARFLAGS, RANLIB, LIBRARY, LIB_DIR) and a new rule that archives the utility
+object files into lib/libmyutils.a using "ar rcs" followed by "ranlib". The final link step changed
+from linking all .o files together to linking only main.o against the library using
+"-L../lib -lmyutils", so the executable (client_static) now depends on the library as an
+intermediate build artifact rather than on the raw object files directly.
+
+### Q2: What is the purpose of ar? Why use ranlib right after it?
+ar (archiver) bundles multiple compiled object files into a single archive file (a .a static
+library), similar to how a zip file bundles multiple files together. This lets many object files
+be distributed and linked against as one unit instead of many. ranlib generates or updates an
+index (symbol table) stored inside the archive, which lists which symbols are defined in which
+object file. This index lets the linker quickly find the right object file for an unresolved
+symbol without scanning the whole archive sequentially, which speeds up linking. On many modern
+systems "ar rcs" already builds this index automatically, but running ranlib explicitly (or using
+the "s" flag, as we did) guarantees it's present and up to date.
+
+### Q3: Are mystrlen's symbols present in client_static via nm? What does this show about static linking?
+Yes — running "nm bin/client_static | grep mystrlen" shows "T mystrlen", where the "T" symbol
+type means the function's actual code is defined in the text (code) section of the executable
+itself. This confirms that static linking physically copies the required object code from the
+library (libmyutils.a) into the final executable at link time. Unlike dynamic linking, where a
+program merely references a shared library that must be present at runtime, a statically linked
+executable is fully self-contained: all the library code it depends on becomes part of the binary,
+so it can run without libmyutils.a existing anywhere on the system.
