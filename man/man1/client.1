@@ -1,0 +1,30 @@
+.TH CLIENT 1 "September 2026" "Version 0.4.1" "User Commands"
+.SH NAME
+client \- test driver for the myutils string and file utility library
+.SH SYNOPSIS
+.B client
+.SH DESCRIPTION
+.B client
+is the demonstration/test executable for the myutils project. It exercises
+each of the custom string functions (
+.BR mystrlen ", " mystrcpy ", " mystrncpy ", " mystrcat )
+and file functions (
+.BR wordCount ", " mygrep )
+implemented in the myutils library, printing the result of each test to
+standard output.
+.PP
+No command-line arguments are required or accepted; the program runs a
+fixed internal test sequence.
+.SH EXIT STATUS
+.B client
+returns 0 on successful completion, and a non-zero value if a file
+operation used during testing fails.
+.SH SEE ALSO
+.BR mystrlen (3),
+.BR mystrcpy (3),
+.BR mystrncpy (3),
+.BR mystrcat (3),
+.BR wordCount (3),
+.BR mygrep (3)
+.SH AUTHOR
+Husnain Raza <husnain@example.com>

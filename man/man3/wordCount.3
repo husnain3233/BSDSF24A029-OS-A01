@@ -1,0 +1,24 @@
+.TH WORDCOUNT 3 "September 2026" "Version 0.4.1" "myutils Library"
+.SH NAME
+wordCount \- count lines, words, and characters in a file
+.SH SYNOPSIS
+.B "#include \(dqmyfilefunctions.h\(dq"
+.sp
+.BI "int wordCount(FILE *" file ", int *" lines ", int *" words ", int *" chars );
+.SH DESCRIPTION
+The
+.BR wordCount ()
+function reads the file stream pointed to by
+.I file
+from the beginning, counting the total number of lines, words, and
+characters it contains, and stores the results in
+.IR lines ", " words ", and " chars
+respectively. The file position is rewound before and after the count,
+so the function may be called safely regardless of the stream's current
+position.
+.SH RETURN VALUE
+Returns 0 on success, or \-1 if
+.I file
+or any of the output pointers is NULL.
+.SH AUTHOR
+Husnain Raza <husnain@example.com>

@@ -1,0 +1,31 @@
+.TH MYGREP 3 "September 2026" "Version 0.4.1" "myutils Library"
+.SH NAME
+mygrep \- search a file for lines containing a substring
+.SH SYNOPSIS
+.B "#include \(dqmyfilefunctions.h\(dq"
+.sp
+.BI "int mygrep(FILE *" fp ", const char *" search_str ", char ***" matches );
+.SH DESCRIPTION
+The
+.BR mygrep ()
+function scans every line of the file stream pointed to by
+.I fp
+for occurrences of the substring
+.IR search_str .
+It allocates
+.I *matches
+as a dynamically growing array of dynamically allocated strings, one per
+matching line, with the trailing newline stripped.
+.PP
+The caller is responsible for freeing each string in
+.I *matches
+and then freeing
+.I *matches
+itself once done.
+.SH RETURN VALUE
+On success, the number of matching lines found is returned (which may be
+zero). Returns \-1 if
+.IR fp ", " search_str ", or " matches
+is NULL, or if memory allocation fails.
+.SH AUTHOR
+Husnain Raza <husnain@example.com>
